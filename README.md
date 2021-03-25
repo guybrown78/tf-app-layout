@@ -1,27 +1,184 @@
-# Navigation
+# Transform Core, NG Zorro and Transform Theme example
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.5.
+## ADD NG-ZORRO
 
-## Development server
+In an existing angular project, install the zorro components
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+`ng add ng-zorro-antd`
 
-## Code scaffolding
+During installation, there are a number of config questions that aid setup, these are the answers that have been selected for this setup;
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+	1. Enable icon dynamic loading [ Detail: https://ng.ant.design/components/icon/en ] `Yes`
 
-## Build
+	2. Set up custom theme file [ Detail: https://ng.ant.design/docs/customize-theme/en ] `Yes`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+	3. Choose your locale code: `en_GB`
 
-## Running unit tests
+	4. Choose template to create project: `blank`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Once the zorro coponents are installed, you can then start the server
 
-## Further help
+`ng serve --port 0 --open`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## ADD Zorro styles / Transform theme
+
+First, we create some global styles for our theme and add the  transform font 'Roboto Condensed'
+
+Add the Roboto condensed font to index.html
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap" rel="stylesheet">
+```
+
+Add the global styles to the styles.css
+
+```css
+html {
+	box-sizing: border-box;
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+body {
+	padding: 0;
+	margin: 0;
+	font-family: 'Roboto Condensed', sans-serif;
+	background-color: #224595;
+	width: 100%;
+	height: 100vh;
+}
+```
+
+When we were adding the zorro components (`ng add ng-zorro-antd`) it asked us if we wanted to add a theme. Answering yes exposed `src/theme.less`. 
+
+Even if we initially created our angular project with basic css, Zorro will still display a `less` file as it is built upon less. In `src/theme.less` we need to add the bespoke theme and overriding styles that make the zorro components look and feel like they belong to Transform.
+
+The Transform theme and styling can be installed from;
+
+`npm i tf-ng-zorro-theme`
+
+And then link the installed zorro theme to tf-ng-zorro-theme by replacing all that is in the `src/theme.less` with the following;
+
+
+```javascript
+
+@import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
+@import "../node_modules/tf-ng-zorro-theme/theme.less";
+
+```
+
+
+
+## ADD TF-NG-CORE
+
+To help out the zorro components and achieve the Transform UI, we need to add a library of prebuilt Angular components. 
+
+Install the Transform Angular Components [tf-ng-core](https://www.npmjs.com/package/tf-ng-core)  from npm
+
+`npm i tf-ng-core`
+
+add to the app.module.ts imports;
+
+`import { TfNgCoreModule } from 'tf-ng-core';`
+
+and then finally ads `TfNgCoreModule` to the NgModule imports list
+
+## POLYFILLS 
+
+To get the application working in IE 11, we need to follow the angular standar procedure and alter the shipped/default polyfill.ts.
+
+`src/polyfill.ts`
+
+1. Uncomment `import 'classlist.js';` (roughly line:22)
+2. Run `npm install --save classlist.js`
+3. Uncomment `import 'web-animations-js';` (roughly line:29)
+4. Run `npm install --save web-animations-js`
+5. Ensure `import 'zone.js/dist/zone';` is uncommented (roughly line:58)
+
+Test a production build, `ng build --prod`
+
+Once built and tested in IE11, there maybe a few additional tweaks needed to get it going, depending on your angular versions and build scripts etc...
+
+One of this is installing [core-js](https://github.com/zloirock/core-js) 
+
+`npm i core-js`
+
+and then adding it entirely to the polyfil.ts or adding just the parts you require;
+
+all:
+
+```javascript
+import 'core-js';
+```
+
+or seperate polyfils, eg:
+
+```javascript
+import 'core-js/es6/symbol';
+import 'core-js/es6/object';
+import 'core-js/es6/function';
+import 'core-js/es6/parse-int';
+import 'core-js/es6/parse-float';
+import 'core-js/es6/number';
+import 'core-js/es6/math';
+import 'core-js/es6/string';
+import 'core-js/es6/date';
+import 'core-js/es6/regexp';
+import 'core-js/es6/map';
+import 'core-js/es6/weak-map';
+import 'core-js/es6/set';
+import 'core-js/es6/array';
+```
+
+Note
+> In the past, i have also had to experiment with core-js version and also the dev dependancy angular-devkit/build-angular version in package.json. This doesn't seem necessary anymore but it is worth noting that if you do run into trouble it is always worth searching for the errors that are printed out and matching them up to package versions
+
+Finally, with angular 10 I found that an additional nodeList polyfil is required after new errors were printed out in the console after updating. These errors were to do with a [forEach](https://gist.github.com/bob-lee/e7520bfcdac266e5490f40c2759cc955) which basically is slotted in the browser polyfils...
+
+```javascript
+if ('NodeList' in window && !NodeList.prototype.forEach) {
+	console.info('polyfill for IE11');
+	NodeList.prototype.forEach = function (callback, thisArg) {
+		 thisArg = thisArg || window;
+		 for (var i = 0; i < this.length; i++) {
+				callback.call(thisArg, this[i], i, this);
+		 }
+	};
+}
+```
+
+
+## Configuring CommonJS dependencies
+
+You might get a few warnings from Angular CLI when starting the project, one of those is about CommonJS or AMD dependencies can cause optimization bailouts. This is because of dependancies like 'date-fns' that zorro use in some of their examples. To stop these warnings, add the dependancies to the build options in angular.json
+
+e.g.
+
+```javascript
+"build": {
+  "builder": "@angular-devkit/build-angular:browser",
+  "options": {
+     "allowedCommonJsDependencies": [
+        "date-fns"
+     ]
+     ...
+   }
+   ...
+},
+```
+
+---
+
+ng serve --port 0 --open
+
+---
+
+
+
+if updating and npm 7 is still causing problems then update with
+
+```javascript 
+  npm install --legacy-peer-deps
+  npm update --legacy-peer-deps
