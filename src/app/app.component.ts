@@ -7,16 +7,29 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit, AfterViewInit {
   isCollapsed = true;
+  currentMenuType:string;
+  //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
+  //
   currScrollTop:number = 0;
   currScrollDir:string;
   showHeader:boolean = true;
+  //
 
+  appList:any[] = [
+    {name:'Home', code:'home'},
+    {name:'Competance Management', code:'cm'},
+    {name:'Learning Management', code:'lm'},
+    {name:'Training Management', code:'tm'},
+
+  ]
   ngOnInit(): void {
 
   }
 
   ngAfterViewInit(){
+
+    /*
     var page = document.getElementById('page'),
     ua = navigator.userAgent,
     iphone = ~ua.indexOf('iPhone') || ~ua.indexOf('iPod'),
@@ -66,6 +79,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       lastWidth = pageWidth;
       setupScroll();
     })();
+
+    */
   }
   closeBottomDrawer(){
     this.isCollapsed = true;
@@ -88,5 +103,30 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.currScrollDir = currScrollDir;
     this.currScrollTop = scrollTop;
     console.log("currScrollDir", this.currScrollDir, "currScrollTop", this.currScrollTop, "show", this.showHeader)
+  }
+
+  onToggleMenuIconClicked(menu:string){
+    if(!this.currentMenuType || this.currentMenuType === menu){
+      this.currentMenuType = !this.isCollapsed ? null : menu;
+      this.isCollapsed = !this.isCollapsed
+    }else{
+      if(!this.isCollapsed){
+        // keep open and change the currentMenuType
+        this.currentMenuType = menu
+      }else{
+        // open
+        this.currentMenuType = menu
+        this.isCollapsed = true
+      }
+    }
+  }
+  onItemSelected(){
+		// this.isCollapsed = !this.isCollapsed;
+    this.onToggleMenuIconClicked(this.currentMenuType)
+	}
+
+  onAppSelected(appCode:string){
+    console.log(appCode)
+    this.onItemSelected();
   }
 }

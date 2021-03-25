@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
 import { TfNgCoreModule } from 'tf-ng-core';
+import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
@@ -38,6 +39,7 @@ registerLocaleData(en);
     BrowserAnimationsModule,
     IconsProviderModule,
     TfNgCoreModule,
+    NzGridModule,
     NzLayoutModule,
     NzMenuModule,
     NzDrawerModule,
