@@ -6,14 +6,16 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
+  footerMenuIsCollapsed = true;
+  footerMenuItemsIsCollapsed = true;
   isCollapsed = true;
   currentMenuType:string;
   //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
   //
-  currScrollTop:number = 0;
-  currScrollDir:string;
-  showHeader:boolean = true;
+  // currScrollTop:number = 0;
+  // currScrollDir:string;
+  // showHeader:boolean = true;
   //
 
   appList:any[] = [
@@ -21,89 +23,33 @@ export class AppComponent implements OnInit, AfterViewInit {
     {name:'Competance Management', code:'cm'},
     {name:'Learning Management', code:'lm'},
     {name:'Training Management', code:'tm'},
-
   ]
-  ngOnInit(): void {
 
+  ngOnInit(): void {
   }
 
   ngAfterViewInit(){
-
-    /*
-    var page = document.getElementById('page'),
-    ua = navigator.userAgent,
-    iphone = ~ua.indexOf('iPhone') || ~ua.indexOf('iPod'),
-    ipad = ~ua.indexOf('iPad'),
-    ios = iphone || ipad,
-    // Detect if this is running as a fullscreen app from the homescreen
-    fullscreen = true,
-    android = ~ua.indexOf('Android'),
-    lastWidth = 0;
-
-    if (android) {
-      // Android's browser adds the scroll position to the innerHeight, just to
-      // make this really fucking difficult. Thus, once we are scrolled, the
-      // page height value needs to be corrected in case the page is loaded
-      // when already scrolled down. The pageYOffset is of no use, since it always
-      // returns 0 while the address bar is displayed.
-      window.onscroll = function() {
-        page.style.height = window.innerHeight + 'px'
-      }
-    }
-    var setupScroll = window.onload = function() {
-      // Start out by adding the height of the location bar to the width, so that
-      // we can scroll past it
-      if (ios) {
-        // iOS reliably returns the innerWindow size for documentElement.clientHeight
-        // but window.innerHeight is sometimes the wrong value after rotating
-        // the orientation
-        var height = document.documentElement.clientHeight;
-        // Only add extra padding to the height on iphone / ipod, since the ipad
-        // browser doesn't scroll off the location bar.
-        if (iphone && !fullscreen) height += 60;
-        page.style.height = height + 'px';
-      } else if (android) {
-        // The stock Android browser has a location bar height of 56 pixels, but
-        // this very likely could be broken in other Android browsers.
-        page.style.height = (window.innerHeight + 56) + 'px'
-      }
-      // Scroll after a timeout, since iOS will scroll to the top of the page
-      // after it fires the onload event
-      setTimeout(scrollTo, 0, 0, 1);
-    };
-    (window.onresize = function() {
-      var pageWidth = page.offsetWidth;
-      // Android doesn't support orientation change, so check for when the width
-      // changes to figure out when the orientation changes
-      if (lastWidth == pageWidth) return;
-      lastWidth = pageWidth;
-      setupScroll();
-    })();
-
-    */
   }
   closeBottomDrawer(){
     this.isCollapsed = true;
   }
 
-  onMainContentScroll(event){
-    // console.log(event)
-    // console.log(event.target.scrollTop)
-    const scrollTop = event.target.scrollTop
-    const currScrollDir = scrollTop > this.currScrollTop ? 'down' : 'up';
-    if(this.showHeader){
-      if(currScrollDir === 'down' && this.currScrollTop > 25){
-        this.showHeader = false;
-      }
-    }else{
-      if(currScrollDir === 'up' && scrollTop < this.currScrollTop){
-        this.showHeader = true;
-      }
-    }
-    this.currScrollDir = currScrollDir;
-    this.currScrollTop = scrollTop;
-    console.log("currScrollDir", this.currScrollDir, "currScrollTop", this.currScrollTop, "show", this.showHeader)
-  }
+  // onMainContentScroll(event){
+  //   const scrollTop = event.target.scrollTop
+  //   const currScrollDir = scrollTop > this.currScrollTop ? 'down' : 'up';
+  //   if(this.showHeader){
+  //     if(currScrollDir === 'down' && this.currScrollTop > 25){
+  //       this.showHeader = false;
+  //     }
+  //   }else{
+  //     if(currScrollDir === 'up' && scrollTop < this.currScrollTop){
+  //       this.showHeader = true;
+  //     }
+  //   }
+  //   this.currScrollDir = currScrollDir;
+  //   this.currScrollTop = scrollTop;
+  //   console.log("currScrollDir", this.currScrollDir, "currScrollTop", this.currScrollTop, "show", this.showHeader)
+  // }
 
   onToggleMenuIconClicked(menu:string){
     if(!this.currentMenuType || this.currentMenuType === menu){
@@ -126,7 +72,30 @@ export class AppComponent implements OnInit, AfterViewInit {
 	}
 
   onAppSelected(appCode:string){
-    console.log(appCode)
     this.onItemSelected();
+  }
+
+  onFloatingMenuClicked(){
+    this.footerMenuIsCollapsed = !this.footerMenuIsCollapsed;
+  }
+
+  onFooterMenuClicked(menu:string){
+
+    if(!this.currentMenuType || this.currentMenuType === menu){
+      this.currentMenuType = !this.footerMenuItemsIsCollapsed ? null : menu;
+      this.footerMenuItemsIsCollapsed = !this.footerMenuItemsIsCollapsed
+    }else{
+      if(!this.footerMenuItemsIsCollapsed){
+        // keep open and change the currentMenuType
+        this.currentMenuType = menu
+      }else{
+        // open
+        this.currentMenuType = menu
+        this.footerMenuItemsIsCollapsed = true
+      }
+    }
+
+
+
   }
 }

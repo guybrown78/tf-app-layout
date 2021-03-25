@@ -1,0 +1,324 @@
+<nz-layout id="page" class="app-layout">
+
+ <!-- <div class="left-column"></div> -->
+   <nz-sider class="menu-sidebar"
+    nzCollapsible
+    nzWidth="300px"
+    [(nzCollapsed)]="isCollapsed"
+    [nzTrigger]="null"
+  >
+    <div class="tf-layout-sider-children">
+      <div class="side-bar-left-column">
+        <div class="tf-layout-header-content justify-content-center">
+          <tf-ng-hexagon colour="white" size="m" [as-button]="false">
+            <tf-ng-product-initials
+              colour="blue"
+              code="t"
+              size="m"
+            ></tf-ng-product-initials>
+          </tf-ng-hexagon>
+        </div>
+
+        <div class="tf-layout-body-content justify-content-center">
+          <tf-ng-hexagon
+            (click)="onToggleMenuIconClicked('app-menu')"
+            colour="blue"
+            outline-colour="white"
+            size="m"
+            [as-button]="false"
+          >
+            <i nz-icon
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </tf-ng-hexagon>
+        </div>
+
+        <div class="tf-layout-footer-content justify-content-center">
+          <tf-ng-hexagon
+            (click)="onToggleMenuIconClicked('app-store')"
+            colour="blue"
+            outline-colour="white"
+            size="m"
+            [as-button]="false"
+          >
+            <i nz-icon nzType="appstore" nzTheme="outline"></i>
+          </tf-ng-hexagon>
+        </div>
+
+      </div>
+
+      <div class="side-bar-right-column">
+        <div class="tf-layout-header-content"></div>
+
+        <div *ngIf="currentMenuType === 'app-menu'" class="tf-layout-body-content">
+          <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+            <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+              <ul>
+                <li nz-menu-item nzMatchRouter>
+                  <a routerLink="/welcome" (click)="onItemSelected()">Welcome</a>
+                </li>
+                <li nz-menu-item nzMatchRouter>
+                  <a routerLink="/monitor" (click)="onItemSelected()">Monitor</a>
+                </li>
+                <li nz-menu-item nzMatchRouter>
+                  <a>Workplace</a>
+                </li>
+              </ul>
+            </li>
+            <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+              <ul>
+                <li nz-menu-item nzMatchRouter>
+                  <a>Basic Form</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+
+        </div>
+
+        <div
+          *ngIf="currentMenuType === 'app-store'"
+          class="tf-layout-body-content"
+        >
+        <tf-ng-item colour="dark" bottom>
+          <h5 nz-typography class="white">Your apps</h5>
+          <div nz-row [nzGutter]="[4, 4]">
+            <div nz-col class="app-selection-row" nzJustify="start" [nzSpan]="4" *ngFor="let app of appList">
+              <tf-ng-hexagon
+                nz-tooltip
+                [nzTooltipTitle]="app.name"
+                nzTooltipOverlayClassName="tf-tooltip-white"
+                nzTooltipPlacement="right"
+                colour="white" outline-colour="blue"
+                size="xs"
+                (click)="onAppSelected(app.code)"
+              >
+                <i
+                  nz-icon
+                  nzType="appstore"
+                  nzTheme="outline"
+                  *ngIf="app.code ==='home'"
+                ></i>
+                <tf-ng-product-initials
+                  colour="blue"
+                  [code]="app.code"
+                  size="xs"
+                  *ngIf="app.code !=='home'"
+                ></tf-ng-product-initials>
+              </tf-ng-hexagon>
+            </div>
+          </div>
+        </tf-ng-item>
+        </div>
+
+
+      </div>
+    </div>
+
+  </nz-sider>
+
+  <div
+    class="tf-layout-bottom-drawer"
+    [ngClass]="!isCollapsed ? 'opened' : 'closed'"
+  >
+    <div class="app-header tf-layout-side-padding">
+      <div class="tf-layout-bottom-drawer-header-content tf-layout-header-content">
+
+        <tf-ng-hexagon
+          (click)="onItemSelected()"
+          colour="blue"
+          outline-colour="white"
+          size="xs"
+          [as-button]="false"
+        >
+        <i nz-icon nzType="close" nzTheme="outline"></i>
+        </tf-ng-hexagon>
+        <h2>Navigation type title</h2>
+      </div>
+
+    </div>
+
+    <div *ngIf="currentMenuType === 'app-menu'" class="tf-layout-body-content">
+      <ul class="mobile-menu" nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/welcome" (click)="onItemSelected()">Welcome</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/monitor" (click)="onItemSelected()">Monitor</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a>Workplace</a>
+            </li>
+          </ul>
+        </li>
+        <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a>Basic Form</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div
+          *ngIf="currentMenuType === 'app-store'"
+          class="tf-layout-body-content"
+        >
+        <tf-ng-item colour="dark" bottom>
+          <h5 nz-typography class="white">Your apps</h5>
+          <div nz-row [nzGutter]="[4, 4]">
+            <div nz-col class="app-selection-row" nzJustify="start" [nzSpan]="4" *ngFor="let app of appList">
+              <tf-ng-hexagon
+                nz-tooltip
+                [nzTooltipTitle]="app.name"
+                nzTooltipOverlayClassName="tf-tooltip-white"
+                nzTooltipPlacement="right"
+                colour="white" outline-colour="blue"
+                size="xs"
+                (click)="onAppSelected(app.code)"
+              >
+                <i
+                  nz-icon
+                  nzType="appstore"
+                  nzTheme="outline"
+                  *ngIf="app.code ==='home'"
+                ></i>
+                <tf-ng-product-initials
+                  colour="blue"
+                  [code]="app.code"
+                  size="xs"
+                  *ngIf="app.code !=='home'"
+                ></tf-ng-product-initials>
+              </tf-ng-hexagon>
+            </div>
+          </div>
+        </tf-ng-item>
+        </div>
+    <!-- <ng-container *nzDrawerContent class="tf-layout-bottom-drawer-content">
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </ng-container> -->
+  </div>
+
+  <!-- <tf-ng-side-drawer
+    [opened]="!isCollapsed"
+    (opened-changed)="isCollapsed=$event"
+  >
+    <p>gshjjhvjhvsljvdwlhvwk</p>
+  </tf-ng-side-drawer> -->
+
+  <!-- <nz-drawer
+    [nzClosable]="true"
+    [nzVisible]="!isCollapsed"
+    nzPlacement="bottom"
+    nzTitle="Basic Drawer"
+    nzHeight="100%"
+    nzMask=false
+    nzWrapClassName="tf-layout-bottom-drawer"
+    (nzOnClose)="closeBottomDrawer()"
+  >
+    <ng-container *nzDrawerContent>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </ng-container>
+  </nz-drawer> -->
+
+
+  <nz-layout>
+
+    <nz-header [ngClass]="showHeader ? 'show' : 'hide' ">
+      <!-- <div class="app-header">
+
+      </div> -->
+
+      <tf-ng-header
+        [show-app-logo]="false"
+      >
+
+	<div quickLinks>
+		<button
+			nz-button
+			nz-dropdown
+			nzTrigger="click"
+			nzPlacement="bottom"
+			[nzDropdownMenu]="headerQuickLinksMenu"
+			class="tf-app-quick-link-btn"
+		>
+			<tf-ng-hexagon
+				size="xl"
+				colour="aqua"
+				outline-colour="blue"
+			>
+				<i nz-icon nzType="plus" nzTheme="outline" class="tf-app-quick-link-icon"></i>
+			</tf-ng-hexagon>
+		</button>
+	</div>
+
+
+  <tf-ng-client-logo
+    #tfAppHeaderClientLogo
+    id="tfAppHeaderClientLogo"
+		clientLogo
+		[client-logo-source]="clientLogoSource"
+		[show-user-account]="false"
+	>
+	</tf-ng-client-logo>
+
+</tf-ng-header>
+
+
+    </nz-header>
+
+    <nz-content (scroll)="onMainContentScroll($event)">
+      <div class="inner-content">
+        <tf-ng-main-content>
+          <router-outlet #outlet="outlet"></router-outlet>
+        </tf-ng-main-content>
+      </div>
+    </nz-content>
+    <nz-footer>
+      <div class="app-footer tf-layout-side-padding">
+        <div class="tf-layout-footer-content">
+          <tf-ng-hexagon
+            (click)="onToggleMenuIconClicked('app-menu')"
+            colour="blue"
+            outline-colour="white"
+            size="xs"
+            [as-button]="false"
+          >
+            <i nz-icon
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </tf-ng-hexagon>
+
+
+          <tf-ng-hexagon
+            (click)="onToggleMenuIconClicked('app-store')"
+            colour="blue"
+            outline-colour="white"
+            size="xs"
+            [as-button]="false"
+          >
+            <i nz-icon nzType="appstore" nzTheme="outline"></i>
+          </tf-ng-hexagon>
+
+
+        </div>
+      </div>
+    </nz-footer>
+  </nz-layout>
+
+</nz-layout>
+
+
+<nz-dropdown-menu #headerQuickLinksMenu="nzDropdownMenu">
+	<ul nz-menu>
+    <li nz-menu-item>Add User</li>
+    <li nz-menu-item>Add Course</li>
+	</ul>
+</nz-dropdown-menu>
