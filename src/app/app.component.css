@@ -173,9 +173,13 @@ nz-content {
 }
 .tf-layout-bottom-drawer.closed{
 	bottom: -100%;
+  opacity: 0;
+  pointer-events: none;
 }
 .tf-layout-bottom-drawer.opened{
 	bottom:0;
+  opacity: 1;
+  pointer-events: all;
 }
 .tf-layout-side-padding{
   /* padding-left: 0.7rem;;
