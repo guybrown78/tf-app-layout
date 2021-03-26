@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -8,14 +8,12 @@ import { AfterViewInit, Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit, AfterViewInit {
   footerMenuIsCollapsed = true;
   footerMenuItemsIsCollapsed = true;
+  //
+  isMobile:boolean = true;
   isCollapsed = true;
   currentMenuType:string;
   //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
-  //
-  // currScrollTop:number = 0;
-  // currScrollDir:string;
-  // showHeader:boolean = true;
   //
 
   appList:any[] = [
@@ -25,31 +23,27 @@ export class AppComponent implements OnInit, AfterViewInit {
     {name:'Training Management', code:'tm'},
   ]
 
+  bottomDrawMaskStyle:any = {
+    border:'solid 8px #FF0000',
+    opacity:'0.1',
+    backgroundColor:'#00FF00',
+    pointerEvents:'none'
+  }
+
   ngOnInit(): void {
   }
 
   ngAfterViewInit(){
+    this.onScreenResize()
   }
+
+  onScreenResize(){
+    this.isMobile = !(window.screen.width >= 576)
+  }
+
   closeBottomDrawer(){
     this.isCollapsed = true;
   }
-
-  // onMainContentScroll(event){
-  //   const scrollTop = event.target.scrollTop
-  //   const currScrollDir = scrollTop > this.currScrollTop ? 'down' : 'up';
-  //   if(this.showHeader){
-  //     if(currScrollDir === 'down' && this.currScrollTop > 25){
-  //       this.showHeader = false;
-  //     }
-  //   }else{
-  //     if(currScrollDir === 'up' && scrollTop < this.currScrollTop){
-  //       this.showHeader = true;
-  //     }
-  //   }
-  //   this.currScrollDir = currScrollDir;
-  //   this.currScrollTop = scrollTop;
-  //   console.log("currScrollDir", this.currScrollDir, "currScrollTop", this.currScrollTop, "show", this.showHeader)
-  // }
 
   onToggleMenuIconClicked(menu:string){
     if(!this.currentMenuType || this.currentMenuType === menu){
@@ -77,7 +71,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   onFloatingMenuClicked(){
     this.footerMenuIsCollapsed = !this.footerMenuIsCollapsed;
-    console.log(this.footerMenuIsCollapsed)
     if(this.footerMenuIsCollapsed){
       this.footerMenuItemsIsCollapsed = true;
     }
@@ -97,8 +90,9 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.footerMenuItemsIsCollapsed = true
       }
     }
+  }
 
-
-
+  onTestClicked(msg:string){
+    console.log(">",msg)
   }
 }

@@ -1,10 +1,10 @@
 
 
 
-<nz-layout class="app-layout">
+<nz-layout (window:resize)="onScreenResize()" class="app-layout">
 
-  <nz-layout class="tf-layout-side-column">
-    <div class="side-bar-left-column">
+  <nz-layout  class="tf-layout-side-column">
+    <div #sideBarColumn class="side-bar-left-column">
       <div class="tf-layout-header-content justify-content-center">
         <tf-ng-hexagon colour="white" size="m" [as-button]="false">
           <tf-ng-product-initials
@@ -46,7 +46,26 @@
 
   <nz-layout class="app-content">
     <nz-header class="app-header">
-      <tf-ng-header [show-app-logo]="false" >
+      <tf-ng-header
+        [show-app-logo]="isMobile ? true : false"
+        [is-logo-clickable]="false"
+        app-code="T"
+        [app-logo-size]="'m'"
+      >
+
+        <div headerIcons *ngIf="isMobile" >
+          <tf-ng-hexagon
+            (click)="onToggleMenuIconClicked('app-menu')"
+            size="m"
+            colour="blue"
+            outline-colour="white"
+          >
+            <i nz-icon class="white"
+            [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+            ></i>
+          </tf-ng-hexagon>
+        </div>
+
         <div quickLinks>
           <button
             nz-button
@@ -88,16 +107,17 @@
     <tf-ng-main-content>
       <router-outlet #outlet="outlet"></router-outlet>
     </tf-ng-main-content>
+
   </nz-layout>
 </nz-layout>
 
-
+<!--
 <div class="tf-mobile-float-menu">
   <button
     nz-button
     nzPlacement="bottom"
     class="tf-app-quick-link-btn"
-    (click)="onFloatingMenuClicked()"
+    (click)="onToggleMenuIconClicked('app-menu')"
   >
     <tf-ng-hexagon
       size="sm"
@@ -107,14 +127,16 @@
       <i nz-icon nzType="menu" nzTheme="outline" class="tf-app-quick-link-icon"></i>
     </tf-ng-hexagon>
   </button>
-</div>
+</div> -->
 
+<!-- Side -->
 <nz-drawer
   [nzClosable]="true"
   [nzVisible]="!isCollapsed"
-  [nzPlacement]="'left'"
+  nzPlacement="left"
   [nzTitle]="menuDrawHeader"
-  [nzOffsetX]="80"
+  [nzOffsetX]="isMobile ? 0 : 80"
+  [nzWidth]="isMobile ? '100%' : 260"
   (nzOnClose)="onItemSelected()"
 >
   <ng-container *nzDrawerContent>
@@ -130,11 +152,18 @@
 </ng-template>
 
 
-<nz-drawer
+
+<!-- Mobile Bottom  -->
+<!-- <nz-drawer
   [nzClosable]="false"
   [nzPlacement]="'bottom'"
   [nzHeight]="100"
   [nzVisible]="!footerMenuIsCollapsed"
+  nzZIndex="1000"
+  nzMaskClosable=false
+  nzMask=false
+  nzWrapClassName="tf-bottom-mobile-initial-drawer"
+  [nzMaskStyle]="bottomDrawMaskStyle"
   (nzOnClose)="onFloatingMenuClicked()"
 >
   <ng-container *nzDrawerContent>
@@ -164,21 +193,24 @@
 
 
     </div>
-  </ng-container>
-  <nz-drawer
-    [nzClosable]="false"
-    [nzPlacement]="'bottom'"
-    [nzHeight]="'calc(100% - 100px)'"
-    [nzVisible]="!footerMenuItemsIsCollapsed"
-    [nzTitle]="menuDrawHeader"
-    [nzOffsetY]="100"
-    (nzOnClose)="onFloatingMenuClicked()"
+  </ng-container> -->
+
+  <!-- Mobile Sub -->
+  <!-- <nz-drawer
+  [nzClosable]="true"
+  [nzPlacement]="'bottom'"
+  [nzHeight]="'calc(100% - 100px)'"
+  [nzVisible]="!footerMenuItemsIsCollapsed"
+  [nzTitle]="menuDrawHeader"
+  [nzOffsetY]="100"
+  (nzOnClose)="onFloatingMenuClicked()"
   >
-    <ng-container *nzDrawerContent>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-    </ng-container>
+  <ng-container *nzDrawerContent>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <p>Some contents...</p>
+    <button (click)="onTestClicked('TEST')">Test!!!!!</button>
+  </ng-container>
   </nz-drawer>
 
-</nz-drawer>
+</nz-drawer> -->
