@@ -77,10 +77,13 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   onFloatingMenuClicked(){
     this.footerMenuIsCollapsed = !this.footerMenuIsCollapsed;
+    console.log(this.footerMenuIsCollapsed)
+    if(this.footerMenuIsCollapsed){
+      this.footerMenuItemsIsCollapsed = true;
+    }
   }
 
   onFooterMenuClicked(menu:string){
-
     if(!this.currentMenuType || this.currentMenuType === menu){
       this.currentMenuType = !this.footerMenuItemsIsCollapsed ? null : menu;
       this.footerMenuItemsIsCollapsed = !this.footerMenuItemsIsCollapsed
