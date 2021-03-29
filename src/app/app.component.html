@@ -1,7 +1,7 @@
 
 
-
-<nz-layout (window:resize)="onScreenResize()" class="app-layout">
+<!-- (window:resize)="onScreenResize()"  -->
+<nz-layout class="app-layout">
 
   <nz-layout  class="tf-layout-side-column">
     <div #sideBarColumn class="side-bar-left-column">
@@ -131,26 +131,128 @@
 
 <!-- Side -->
 <nz-drawer
-  [nzClosable]="true"
+  [nzClosable]="false"
   [nzVisible]="!isCollapsed"
   nzPlacement="left"
-  [nzTitle]="menuDrawHeader"
+  [nzTitle]="isMobile ? mobileMenuDrawHeader : menuDrawHeader"
   [nzOffsetX]="isMobile ? 0 : 80"
   [nzWidth]="isMobile ? '100%' : 260"
+  [nzWrapClassName]="isMobile ? 'tf-draw-menu mobile' : 'tf-draw-menu'"
   (nzOnClose)="onItemSelected()"
 >
   <ng-container *nzDrawerContent>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
+    <div *ngIf="currentMenuType === 'app-menu'" class="tf-layout-body-content">
+      <ul class="mobile-menu" nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/welcome" (click)="onItemSelected()">Welcome</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a routerLink="/monitor" (click)="onItemSelected()">Monitor</a>
+            </li>
+            <li nz-menu-item nzMatchRouter>
+              <a>Workplace</a>
+            </li>
+          </ul>
+        </li>
+        <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+          <ul>
+            <li nz-menu-item nzMatchRouter>
+              <a>Basic Form</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div
+      *ngIf="currentMenuType === 'app-store'"
+      class="tf-layout-body-content"
+    >
+      <tf-ng-item colour="dark" bottom>
+        <h5 nz-typography class="white">Your apps</h5>
+        <div nz-row [nzGutter]="[4, 4]">
+          <div nz-col class="app-selection-row" nzJustify="start" [nzSpan]="4" *ngFor="let app of appList">
+            <tf-ng-hexagon
+              nz-tooltip
+              [nzTooltipTitle]="app.name"
+              nzTooltipOverlayClassName="tf-tooltip-white"
+              nzTooltipPlacement="right"
+              colour="white" outline-colour="blue"
+              size="xs"
+              (click)="onAppSelected(app.code)"
+            >
+              <i
+                nz-icon
+                nzType="appstore"
+                nzTheme="outline"
+                *ngIf="app.code ==='home'"
+              ></i>
+              <tf-ng-product-initials
+                colour="blue"
+                [code]="app.code"
+                size="xs"
+                *ngIf="app.code !=='home'"
+              ></tf-ng-product-initials>
+            </tf-ng-hexagon>
+          </div>
+        </div>
+      </tf-ng-item>
+    </div>
+
+
   </ng-container>
+
+
+
+
+
 </nz-drawer>
+
+
+
+<!-- Desktop menu header -->
 <ng-template #menuDrawHeader>
   <div class="menu-draw-header-template">
-    hjhjhkj
+    <span *ngIf="currentMenuType === 'app-menu'">App navigation</span>
+    <span *ngIf="currentMenuType === 'app-store'">Switch apps</span>
+    <i nz-icon class="blue" nzType="close" (click)="onCloseDrawer()"></i>
   </div>
 </ng-template>
 
+<!-- Mobile menu header -->
+<ng-template #mobileMenuDrawHeader>
+  <div class="mobile-menu-draw-header-template">
+    <tf-ng-hexagon
+      (click)="onCloseDrawer()"
+      size="m"
+      colour="white"
+      outline-colour="blue"
+    >
+      <i nz-icon class="blue" nzType="close"></i>
+    </tf-ng-hexagon>
+
+    <tf-ng-hexagon
+      (click)="onToggleMenuIconClicked('app-menu')"
+      size="m"
+      colour="white"
+      outline-colour="blue"
+    >
+      <i nz-icon class="blue" nzType="menu" nzTheme="outline"></i>
+    </tf-ng-hexagon>
+
+    <tf-ng-hexagon
+      (click)="onToggleMenuIconClicked('app-store')"
+      size="m"
+      colour="white"
+      outline-colour="blue"
+    >
+      <i nz-icon class="blue" nzType="appstore" nzTheme="outline"></i>
+    </tf-ng-hexagon>
+
+  </div>
+</ng-template>
 
 
 <!-- Mobile Bottom  -->

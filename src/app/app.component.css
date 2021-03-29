@@ -71,6 +71,9 @@
 .menu-draw-header-template{
   height: 42px;
   line-height: 27px;
+  display: flex;
+  flex: 1 0 0%;
+  justify-content: space-between;
 }
 
 /* .tf-mobile-float-menu{
@@ -98,6 +101,7 @@
 }
 
 
+
 @media (min-width: 576px) {
   .tf-layout-side-column{
     display: flex;
@@ -105,27 +109,4 @@
   .side-bar-left-column{
     display: flex;
   }
-  /* .tf-mobile-float-menu{
-    display: none;
-  } */
-  /* tf-ng-main-content{
-    margin-bottom: 0px;
-  } */
-	/* nz-footer{
-    display: none;
-  } */
-  /* nz-sider{
-    display: block;
-  } */
-  /* nz-drawer, .tf-layout-bottom-drawer{
-    display: none;
-  } */
-  /* .tf-layout-side-padding{
-    padding-left: 1.4rem;;
-    padding-right: 1.4rem;
-  } */
-  /* .tf-layout-footer-content tf-ng-hexagon{
-    margin-right: 0;
-    margin-bottom: 10px;
-  } */
 }

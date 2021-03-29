@@ -13,9 +13,12 @@ export class AppComponent implements OnInit, AfterViewInit {
   isCollapsed = true;
   currentMenuType:string;
   //
+  mobileThreshold:number = 576;
+  //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
   //
-
+  mql:any
+  //
   appList:any[] = [
     {name:'Home', code:'home'},
     {name:'Competance Management', code:'cm'},
@@ -34,11 +37,16 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(){
+    this.mql = window.matchMedia(`(min-width: ${this.mobileThreshold}px)`);
+    this.mql.addEventListener( "change", (e) => {
+      this.isMobile = !e.matches
+    })
+
     this.onScreenResize()
   }
 
   onScreenResize(){
-    this.isMobile = !(window.screen.width >= 576)
+    this.isMobile = !(window.screen.width >= this.mobileThreshold)
   }
 
   closeBottomDrawer(){
@@ -64,7 +72,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 		// this.isCollapsed = !this.isCollapsed;
     this.onToggleMenuIconClicked(this.currentMenuType)
 	}
-
+  onCloseDrawer(){
+    this.onToggleMenuIconClicked(this.currentMenuType)
+  }
   onAppSelected(appCode:string){
     this.onItemSelected();
   }
@@ -94,5 +104,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   onTestClicked(msg:string){
     console.log(">",msg)
+  }
+
+  ngOnDestroy(){
+    this.mql.removeEventListener( "change" );
   }
 }
