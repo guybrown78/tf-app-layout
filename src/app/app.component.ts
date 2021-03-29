@@ -6,12 +6,11 @@ import { AfterViewInit, Component, OnInit, ElementRef, ViewChild, HostListener }
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  footerMenuIsCollapsed = true;
-  footerMenuItemsIsCollapsed = true;
   //
   isMobile:boolean = true;
   isCollapsed = true;
   currentMenuType:string;
+  currentMenuColour:string = "blue";
   //
   mobileThreshold:number = 576;
   //
@@ -20,18 +19,21 @@ export class AppComponent implements OnInit, AfterViewInit {
   mql:any
   //
   appList:any[] = [
-    {name:'Home', code:'home'},
     {name:'Competance Management', code:'cm'},
     {name:'Learning Management', code:'lm'},
     {name:'Training Management', code:'tm'},
   ]
+  discoverAppList:any[] = [
+    {name:'R3 Demo', code:'r3'},
+    {name:'VR Digital Twin Preview', code:'vr'},
+  ]
 
-  bottomDrawMaskStyle:any = {
-    border:'solid 8px #FF0000',
-    opacity:'0.1',
-    backgroundColor:'#00FF00',
-    pointerEvents:'none'
-  }
+  // bottomDrawMaskStyle:any = {
+  //   border:'solid 8px #FF0000',
+  //   opacity:'0.1',
+  //   backgroundColor:'#00FF00',
+  //   pointerEvents:'none'
+  // }
 
   ngOnInit(): void {
   }
@@ -67,6 +69,7 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.isCollapsed = true
       }
     }
+    this.setMenuColour(this.currentMenuType);
   }
   onItemSelected(){
 		// this.isCollapsed = !this.isCollapsed;
@@ -79,29 +82,11 @@ export class AppComponent implements OnInit, AfterViewInit {
     this.onItemSelected();
   }
 
-  onFloatingMenuClicked(){
-    this.footerMenuIsCollapsed = !this.footerMenuIsCollapsed;
-    if(this.footerMenuIsCollapsed){
-      this.footerMenuItemsIsCollapsed = true;
-    }
-  }
 
-  onFooterMenuClicked(menu:string){
-    if(!this.currentMenuType || this.currentMenuType === menu){
-      this.currentMenuType = !this.footerMenuItemsIsCollapsed ? null : menu;
-      this.footerMenuItemsIsCollapsed = !this.footerMenuItemsIsCollapsed
-    }else{
-      if(!this.footerMenuItemsIsCollapsed){
-        // keep open and change the currentMenuType
-        this.currentMenuType = menu
-      }else{
-        // open
-        this.currentMenuType = menu
-        this.footerMenuItemsIsCollapsed = true
-      }
-    }
+  setMenuColour(menu){
+    console.log(menu, menu === "app-store" ? 'blue' : 'white')
+    this.currentMenuColour = menu === "app-menu" ? 'white' : 'blue'
   }
-
   onTestClicked(msg:string){
     console.log(">",msg)
   }
