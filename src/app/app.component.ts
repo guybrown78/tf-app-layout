@@ -140,6 +140,7 @@ export class AppComponent implements OnInit, AfterViewInit {
       nzOffsetX: this.isMobile ? 0 : 80,
       nzWrapClassName: className,
       nzZIndex:1000,
+      nzMaskStyle:{ backgroundColor:'rgba(0,0,0,0)' },
       nzOnCancel:() => {
 
         return this.resolvedPromiseMethod()
