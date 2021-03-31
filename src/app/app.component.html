@@ -1,7 +1,13 @@
 
 <nz-layout class="tf-app-layout">
 
-  <nz-layout  class="tf-layout-side-bar" [ngClass]=" 'bg-'+currentMenuColour ">
+  <nz-layout
+    class="tf-layout-side-bar"
+    [ngClass]="[
+      'bg-'+currentMenuColour,
+      !sideBarIsActive ? ' inactive' : ' active'
+    ]"
+  >
     <div class="side-bar-left-column">
       <div class="tf-layout-header-content justify-content-center">
         <tf-ng-hexagon
@@ -68,10 +74,14 @@
   <nz-layout class="tf-app-content-container">
     <nz-header class="app-header">
       <tf-ng-header
-        [show-app-logo]="isMobile ? true : false"
+        [show-app-details]="true"
         [is-logo-clickable]="false"
+        [show-app-icon]="isMobile ? true : false"
         app-code="T"
         [app-logo-size]="isMobile ? 's' : 'm'"
+        [show-app-title]="isMobile ? false : true"
+        [app-title]="appTitle"
+        [visually-display-app-title]="isCollapsed ? true : false"
       >
 
         <div headerIcons *ngIf="isMobile" >
@@ -118,11 +128,12 @@
           id="tfAppHeaderClientLogo"
           clientLogo
           [client-logo-source]="clientLogoSource"
+          [show-dropdown]="false"
           [show-user-account]="true"
+          icon="logout"
+          (is-open-clicked)="onUserAccountsMenuToggle($event)"
         >
-          <ul nz-menu userAccountMenu class="user-account">
-            <li nz-menu-item>Sign Out</li>
-          </ul>
+
         </tf-ng-client-logo>
 
       </tf-ng-header>
@@ -270,3 +281,14 @@
 </ng-template>
 
 
+
+
+<nz-modal
+	[(nzVisible)]="isSignOutModalVisible"
+	nzTitle="Log Out"
+	(nzOnCancel)="handleCancelSignOut()"
+	nzOkText="Yes, Log Me Out"
+	(nzOnOk)="handleOkSignOut()"
+>
+	<p nzTypography>Please confirm that you would like to end your session and log out</p>
+</nz-modal>

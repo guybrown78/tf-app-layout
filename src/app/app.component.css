@@ -16,12 +16,17 @@
   /*  */
   display: none;
   flex-direction: column;
-  z-index: 1005;
+  /*  */
   transition-property: color, background-color, border-color;
 	transition-duration: 150ms;
 	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
-
+.tf-layout-side-bar.active{
+  z-index: 1005;
+}
+.tf-layout-side-bar.inactive{
+  z-index: 10;
+}
 .side-bar-left-column{
   /* height: 100vh; */
   flex: 1 0 0%;
@@ -136,7 +141,8 @@
 
 
 
-@media (min-width: 576px) {
+/* @media (min-width: 576px) { */
+@media (min-width: 674px) {
   .tf-layout-side-bar{
     display: flex;
   }

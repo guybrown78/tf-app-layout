@@ -10,10 +10,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   isMobile:boolean = true;
   isCollapsed = true;
   drawIsActive = false;
+  sideBarIsActive = false;
   currentMenuType:string;
   currentMenuColour:string = "blue";
   //
-  mobileThreshold:number = 576;
+  mobileThreshold:number = 674;//576;
   //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
   appTitle:string = "Learning Management"
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ]
 
   drawerRef:NzDrawerRef;
+  isSignOutModalVisible:boolean = false;
 
   @ViewChild('menuDrawHeader', { static: false }) menuDrawHeader?: TemplateRef<{
     drawerRef: NzDrawerRef<string>;
@@ -112,9 +114,11 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   setDraw(){
+
     if(this.isCollapsed){
       this.drawerRef?.close();
     }else{
+      this.sideBarIsActive = true;
       this.createDrawer();
     }
   }
@@ -159,6 +163,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     drawer.afterClose.subscribe(() => {
       this.drawIsActive = false;
+      if(this.isCollapsed){
+        this.sideBarIsActive = false
+      }
     });
 
     this.drawerRef = drawer as NzDrawerRef;
@@ -189,6 +196,18 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.drawerRef.nzWrapClassName = this.getDrawerWrapClassName(colour)
     }
   }
+
+  onUserAccountsMenuToggle(isOpen:boolean){
+    this.isSignOutModalVisible = true;
+  }
+
+
+  handleCancelSignOut(){
+		this.isSignOutModalVisible = false;
+	}
+	handleOkSignOut(){
+		this.isSignOutModalVisible = false;
+	}
 
 
   ngOnDestroy(){
