@@ -18,6 +18,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { MonitorComponent } from './pages/monitor/monitor.component';
@@ -44,7 +45,8 @@ registerLocaleData(en);
     NzMenuModule,
     NzDrawerModule,
     NzDropDownModule,
-    NzButtonModule
+    NzButtonModule,
+    NzToolTipModule
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

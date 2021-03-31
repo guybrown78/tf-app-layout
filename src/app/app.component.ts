@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnInit, ElementRef, ViewChild, HostListener } from '@angular/core';
-
+import { AfterViewInit, Component, OnInit, ElementRef, ViewChild, HostListener, Input, TemplateRef } from '@angular/core';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,12 +9,14 @@ export class AppComponent implements OnInit, AfterViewInit {
   //
   isMobile:boolean = true;
   isCollapsed = true;
+  drawIsActive = false;
   currentMenuType:string;
   currentMenuColour:string = "blue";
   //
   mobileThreshold:number = 576;
   //
   clientLogoSource:string = "https://logodix.com/logo/80482.png"
+  appTitle:string = "Learning Management"
   //
   mql:any
   //
@@ -28,12 +30,44 @@ export class AppComponent implements OnInit, AfterViewInit {
     {name:'VR Digital Twin Preview', code:'vr'},
   ]
 
-  // bottomDrawMaskStyle:any = {
-  //   border:'solid 8px #FF0000',
-  //   opacity:'0.1',
-  //   backgroundColor:'#00FF00',
-  //   pointerEvents:'none'
-  // }
+  drawerRef:NzDrawerRef;
+
+  @ViewChild('menuDrawHeader', { static: false }) menuDrawHeader?: TemplateRef<{
+    drawerRef: NzDrawerRef<string>;
+  }>;
+
+  @ViewChild('mobileMenuDrawHeader', { static: false }) mobileMenuDrawHeader?: TemplateRef<{
+    drawerRef: NzDrawerRef<string>;
+  }>;
+
+
+  @ViewChild('drawerAppMenuTemplate', { static: false }) drawerAppMenuTemplate?: TemplateRef<{
+    $implicit: { };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+
+  @ViewChild('drawerAppStoreTemplate', { static: false }) drawerAppStoreTemplate?: TemplateRef<{
+    $implicit: { };
+    drawerRef: NzDrawerRef<string>;
+  }>;
+
+  @ViewChild('drawerMobileTemplate', { static: false }) drawerMobileTemplate?: TemplateRef<{
+    $implicit: { currentMenuType: string};
+    drawerRef: NzDrawerRef<string>;
+  }>;
+
+
+  // @ViewChild('drawerTemplate', { static: false }) drawerTemplate?: TemplateRef<{
+  //   $implicit: { value: string };
+  //   drawerRef: NzDrawerRef<string>;
+  // }>;
+  // value = 'ng';
+
+  resolvedPromiseMethod() {
+    return Promise.resolve();
+  }
+
+  constructor(private drawerService: NzDrawerService) {}
 
   ngOnInit(): void {
   }
@@ -41,27 +75,28 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(){
     this.mql = window.matchMedia(`(min-width: ${this.mobileThreshold}px)`);
     this.mql.addEventListener( "change", (e) => {
-      this.isMobile = !e.matches
+      this.isMobile = !e.matches;
+      this.updateDrawer()
     })
-
     this.onScreenResize()
   }
 
   onScreenResize(){
-    this.isMobile = !(window.screen.width >= this.mobileThreshold)
+    const width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+    this.isMobile = !(width >= this.mobileThreshold);
   }
 
-  closeBottomDrawer(){
-    this.isCollapsed = true;
-  }
-
-  onToggleMenuIconClicked(menu:string){
+  onToggleMenuIconClicked(menu:string, createDrawer:boolean = true){
+    let setDraw = createDrawer;
     if(!this.currentMenuType || this.currentMenuType === menu){
       this.currentMenuType = !this.isCollapsed ? null : menu;
       this.isCollapsed = !this.isCollapsed
     }else{
       if(!this.isCollapsed){
         // keep open and change the currentMenuType
+        if(this.isMobile){
+          setDraw = false;
+        }
         this.currentMenuType = menu
       }else{
         // open
@@ -70,26 +105,90 @@ export class AppComponent implements OnInit, AfterViewInit {
       }
     }
     this.setMenuColour(this.currentMenuType);
+    if(setDraw){
+      this.setDraw()
+    }
+
   }
+
+  setDraw(){
+    if(this.isCollapsed){
+      this.drawerRef?.close();
+    }else{
+      this.createDrawer();
+    }
+  }
+
+  getDrawerWrapClassName(colour){
+    return `tf-draw-menu ${this.isMobile ? 'mobile' : 'desktop'} ${colour}`
+  }
+  createDrawer(){
+    this.drawerRef?.close();
+    this.drawerRef = null;
+    //
+    let className = this.getDrawerWrapClassName(this.currentMenuColour)
+    const drawer = this.drawerService.create({
+      nzClosable:false,
+      nzTitle: this.isMobile ? this.mobileMenuDrawHeader : this.menuDrawHeader,
+      nzPlacement:'left',
+      nzContent: this.isMobile ? this.drawerMobileTemplate
+      : this.currentMenuType === "app-menu"
+        ? this.drawerAppMenuTemplate
+        : this.drawerAppStoreTemplate,
+      // nzContentParams: {value: this.value},
+      nzWidth: this.isMobile ? '100%' : 260,
+      nzOffsetX: this.isMobile ? 0 : 80,
+      nzWrapClassName: className,
+      nzZIndex:1000,
+      nzOnCancel:() => {
+
+        return this.resolvedPromiseMethod()
+          .then(res => {
+            this.onToggleMenuIconClicked(this.currentMenuType, false)
+          })
+          .catch(() => {
+            return false
+          });
+      }
+    });
+
+    drawer.afterOpen.subscribe(() => {
+      this.drawIsActive = true;
+    });
+
+    drawer.afterClose.subscribe(() => {
+      this.drawIsActive = false;
+    });
+
+    this.drawerRef = drawer as NzDrawerRef;
+  }
+
+  updateDrawer(){
+    if(this.drawerRef && !this.isCollapsed){
+      this.onCloseDrawer();
+    }
+  }
+
   onItemSelected(){
-		// this.isCollapsed = !this.isCollapsed;
     this.onToggleMenuIconClicked(this.currentMenuType)
 	}
+
   onCloseDrawer(){
     this.onToggleMenuIconClicked(this.currentMenuType)
   }
+
   onAppSelected(appCode:string){
     this.onItemSelected();
   }
 
-
   setMenuColour(menu){
-    console.log(menu, menu === "app-store" ? 'blue' : 'white')
-    this.currentMenuColour = menu === "app-menu" ? 'white' : 'blue'
+    const colour = menu === "app-menu" ? 'white' : 'blue'
+    this.currentMenuColour = colour;
+    if(this.drawerRef && this.isMobile){
+      this.drawerRef.nzWrapClassName = this.getDrawerWrapClassName(colour)
+    }
   }
-  onTestClicked(msg:string){
-    console.log(">",msg)
-  }
+
 
   ngOnDestroy(){
     this.mql.removeEventListener( "change" );

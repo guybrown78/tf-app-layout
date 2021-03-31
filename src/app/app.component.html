@@ -1,9 +1,7 @@
 
+<nz-layout class="tf-app-layout">
 
-<!-- (window:resize)="onScreenResize()"  -->
-<nz-layout class="app-layout">
-
-  <nz-layout  class="tf-layout-side-column" [ngClass]=" 'bg-'+currentMenuColour ">
+  <nz-layout  class="tf-layout-side-bar" [ngClass]=" 'bg-'+currentMenuColour ">
     <div class="side-bar-left-column">
       <div class="tf-layout-header-content justify-content-center">
         <tf-ng-hexagon
@@ -19,8 +17,13 @@
         </tf-ng-hexagon>
       </div>
 
-      <div class="tf-layout-body-content justify-content-center">
+      <!-- -->
+      <div class="tf-draw-body-content justify-content-center">
         <tf-ng-hexagon
+          nz-tooltip
+          [nzTooltipTitle]="currentMenuType === 'app-menu' ? '' : appTitle + ' navigation'"
+          nzTooltipOverlayClassName="tf-sidebar-tooltip tf-tooltip-white"
+          [nzTooltipPlacement]="currentMenuType === 'app-menu' ? 'left' : 'right'"
           (click)="onToggleMenuIconClicked('app-menu')"
           [colour]="currentMenuType === 'app-menu' ? 'navy' :'blue'"
           outline-colour="white"
@@ -35,6 +38,11 @@
 
       <div class="tf-layout-footer-content justify-content-center">
         <tf-ng-hexagon
+          nz-tooltip
+          [nzTooltipTitle]="currentMenuType === 'app-store' ? '' : 'Switch to...'"
+          nzTooltipOverlayClassName="tf-sidebar-tooltip tf-tooltip-white"
+          [nzTooltipPlacement]="currentMenuType === 'app-store' ? 'left' : 'right'"
+          [nzTooltipTrigger]="currentMenuType === 'app-store' ? null : 'hover'"
           (click)="onToggleMenuIconClicked('app-store')"
           [colour]="
             currentMenuColour === 'white' ? 'white'
@@ -43,7 +51,6 @@
             currentMenuColour === 'white' ? 'blue'
             : currentMenuType === 'app-menu' ? 'blue' : 'white'"
           size="m"
-          [as-button]="false"
         >
           <i
             nz-icon
@@ -58,7 +65,7 @@
     </div>
   </nz-layout>
 
-  <nz-layout class="app-content">
+  <nz-layout class="tf-app-content-container">
     <nz-header class="app-header">
       <tf-ng-header
         [show-app-logo]="isMobile ? true : false"
@@ -113,6 +120,9 @@
           [client-logo-source]="clientLogoSource"
           [show-user-account]="false"
         >
+          <ul nz-menu userAccountMenu class="user-account">
+            <li nz-menu-item>Sign Out</li>
+          </ul>
         </tf-ng-client-logo>
 
       </tf-ng-header>
@@ -125,128 +135,11 @@
   </nz-layout>
 </nz-layout>
 
-<!--
-<div class="tf-mobile-float-menu">
-  <button
-    nz-button
-    nzPlacement="bottom"
-    class="tf-app-quick-link-btn"
-    (click)="onToggleMenuIconClicked('app-menu')"
-  >
-    <tf-ng-hexagon
-      size="sm"
-      colour="aqua"
-      outline-colour="blue"
-    >
-      <i nz-icon nzType="menu" nzTheme="outline" class="tf-app-quick-link-icon"></i>
-    </tf-ng-hexagon>
-  </button>
-</div> -->
-
-<!-- Side -->
-<nz-drawer
-  [nzClosable]="false"
-  [nzVisible]="!isCollapsed"
-  nzPlacement="left"
-  [nzTitle]="isMobile ? mobileMenuDrawHeader : menuDrawHeader"
-  [nzOffsetX]="isMobile ? 0 : 80"
-  [nzWidth]="isMobile ? '100%' : 260"
-  [nzWrapClassName]="isMobile
-    ? 'tf-draw-menu mobile ' + currentMenuColour
-    : 'tf-draw-menu ' + currentMenuColour"
-  (nzOnClose)="onItemSelected()"
->
-  <ng-container *nzDrawerContent>
-    <div *ngIf="currentMenuType === 'app-menu'" class="tf-layout-body-content">
-      <ul class="mobile-menu" nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-        <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-          <ul>
-            <li nz-menu-item nzMatchRouter>
-              <a routerLink="/welcome" (click)="onItemSelected()">Welcome</a>
-            </li>
-            <li nz-menu-item nzMatchRouter>
-              <a routerLink="/monitor" (click)="onItemSelected()">Monitor</a>
-            </li>
-            <li nz-menu-item nzMatchRouter>
-              <a>Workplace</a>
-            </li>
-          </ul>
-        </li>
-        <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-          <ul>
-            <li nz-menu-item nzMatchRouter>
-              <a>Basic Form</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-
-    <div
-      *ngIf="currentMenuType === 'app-store'"
-      class="tf-layout-body-content app-store"
-    >
-
-      <div class="menu-section">
-        <div class="app-store-item" (click)="onAppSelected('home')">
-          <tf-ng-hexagon colour="white" outline-colour="white" size="xs">
-            <tf-ng-product-initials
-              colour="blue" size="xs" code="t"
-            ></tf-ng-product-initials>
-          </tf-ng-hexagon>
-          Back to Transform Hub
-        </div>
-      </div>
-
-      <div class="menu-section">
-        <h3 nzTypography class="white">Your apps</h3>
-        <div *ngFor="let app of appList" class="app-store-item" (click)="onAppSelected(app.code)">
-          <tf-ng-hexagon colour="blue" outline-colour="white" size="xs">
-            <tf-ng-product-initials
-              colour="white" size="xs" [code]="app.code"
-            ></tf-ng-product-initials>
-          </tf-ng-hexagon>
-          {{ app.name }}
-        </div>
-      </div>
-
-      <div class="menu-section">
-        <h3 nzTypography class="white">Discover more</h3>
-        <div *ngFor="let app of discoverAppList" class="app-store-item">
-          <tf-ng-hexagon
-            colour="blue" outline-colour="white" size="xs"
-            (click)="onAppSelected(app.code)"
-          >
-            <tf-ng-product-initials
-              colour="white" size="xs" [code]="app.code"
-            ></tf-ng-product-initials>
-          </tf-ng-hexagon>
-          {{ app.name }}
-        </div>
-      </div>
-
-
-
-    </div>
-
-
-  </ng-container>
-
-
-
-
-
-</nz-drawer>
-
 
 
 <!-- Desktop menu header -->
 <ng-template #menuDrawHeader>
-  <div class="menu-draw-header-template">
-    <!-- <span *ngIf="currentMenuType === 'app-menu'">App navigation</span>
-    <span *ngIf="currentMenuType === 'app-store'">Switch apps</span>
-    <i nz-icon class="blue" nzType="close" (click)="onCloseDrawer()"></i> -->
-  </div>
+  <div class="menu-draw-header-template"></div>
 </ng-template>
 
 <!-- Mobile menu header -->
@@ -289,3 +182,91 @@
 
   </div>
 </ng-template>
+
+<!-- App Menu/Navigation Template -->
+<ng-template #drawerAppMenuTemplate let-data let-drawerRef="drawerRef">
+  <div class="tf-draw-body-content app-menu">
+    <ul class="mobile-menu" nz-menu nzTheme="light" nzMode="inline" >
+      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/welcome" (click)="onItemSelected()">Welcome</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a routerLink="/monitor" (click)="onItemSelected()">Monitor</a>
+          </li>
+          <li nz-menu-item nzMatchRouter>
+            <a>Workplace</a>
+          </li>
+        </ul>
+      </li>
+      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
+        <ul>
+          <li nz-menu-item nzMatchRouter>
+            <a>Basic Form</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</ng-template>
+
+
+<!-- App Store Menu -->
+<ng-template #drawerAppStoreTemplate let-data let-drawerRef="drawerRef">
+  <div class="tf-draw-body-content app-store">
+
+    <div class="menu-section">
+      <div class="app-store-item" (click)="onAppSelected('home')">
+        <tf-ng-hexagon colour="white" outline-colour="white" size="xs">
+          <tf-ng-product-initials
+            colour="blue" size="xs" code="t"
+          ></tf-ng-product-initials>
+        </tf-ng-hexagon>
+        Back to Transform Hub
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3 nzTypography class="white">Your apps</h3>
+      <div *ngFor="let app of appList" class="app-store-item" (click)="onAppSelected(app.code)">
+        <tf-ng-hexagon colour="blue" outline-colour="white" size="xs">
+          <tf-ng-product-initials
+            colour="white" size="xs" [code]="app.code"
+          ></tf-ng-product-initials>
+        </tf-ng-hexagon>
+        {{ app.name }}
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <h3 nzTypography class="white">Discover more</h3>
+      <div *ngFor="let app of discoverAppList" class="app-store-item">
+        <tf-ng-hexagon
+          colour="blue" outline-colour="white" size="xs"
+          (click)="onAppSelected(app.code)"
+        >
+          <tf-ng-product-initials
+            colour="white" size="xs" [code]="app.code"
+          ></tf-ng-product-initials>
+        </tf-ng-hexagon>
+        {{ app.name }}
+      </div>
+    </div>
+
+  </div>
+</ng-template>
+
+<!-- Mobile Menu -->
+<ng-template #drawerMobileTemplate let-data let-drawerRef="drawerRef">
+  <ng-container
+    *ngIf="currentMenuType === 'app-menu'"
+    [ngTemplateOutlet]="drawerAppMenuTemplate"
+  ></ng-container>
+  <ng-container
+    *ngIf="currentMenuType === 'app-store'"
+    [ngTemplateOutlet]="drawerAppStoreTemplate"
+  ></ng-container>
+</ng-template>
+
+
