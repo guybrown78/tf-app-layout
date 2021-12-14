@@ -1,0 +1,85 @@
+<tf-ng-nz-app-page>
+
+  <!-- Page / Route specific navigation -->
+  <tf-ng-nz-app-page-navigation pageNavigation>
+  </tf-ng-nz-app-page-navigation>
+
+
+  <tf-ng-nz-app-page-columns
+    primary-column-width="350"
+  >
+
+    <!-- Start of Left/First column -->
+    <tf-ng-space vertical="md" primaryColumn>
+
+      <!-- Set all components into the scroll -->
+      <tf-ng-nz-content-scroll
+        [force-mobile-main-content-hide]="true"
+      >
+
+
+          <!-- The content header - handles loading state and search -->
+          <tf-ng-nz-content-header
+            header
+            title="Organisation Structure"
+            [sub-title]="data?.length"
+            [has-search]="data?.length > 5"
+            [show-loading]="isLoading"
+            (search-active)="onSearchActive($event)"
+            (search-value)="onSearchValueUpdate($event)"
+            (back-clicked)="onTitleBackClicked()"
+          >
+          </tf-ng-nz-content-header>
+
+
+          <!-- The conent body -->
+          <p *ngIf="!isLoading">structure content...</p>
+
+          <!-- The mobile conent body if force-mobile-main-content-hide -->
+          <p *ngIf="!isLoading" mobileContent class="red">Mobile Content</p>
+
+          <!-- The conent footer -->
+          <tf-ng-nz-content-footer footer>
+          </tf-ng-nz-content-footer>
+
+      </tf-ng-nz-content-scroll>
+
+    </tf-ng-space>
+
+
+
+    <!-- Start of Left/First column -->
+
+    <!-- Show page instructions if no data selected -->
+    <ng-container secondaryColumn *ngIf="!currentData && !isLoading">
+      <tf-ng-instruction-block>
+          <span>Instructions...</span>
+      </tf-ng-instruction-block>
+    </ng-container>
+
+    <!-- Show selected data instructions -->
+    <ng-container secondaryColumn *ngIf="currentData">
+      <tf-ng-space vertical="md">
+        <tf-ng-block colour="white" full-height="false" min-height="280">
+          <tf-ng-space vertical="md">
+
+            <tf-ng-nz-content-header
+              [title]="currentData.fullname"
+              title-size="large"
+              [sub-title]="currentData.email"
+              [show-loading]="currentDataLoading"
+            >
+              <!--  -->
+              <tf-ng-item-group justify="right" items>
+                <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
+              </tf-ng-item-group>
+
+            </tf-ng-nz-content-header>
+
+          </tf-ng-space>
+        </tf-ng-block>
+      </tf-ng-space>
+    </ng-container>
+
+  </tf-ng-nz-app-page-columns>
+</tf-ng-nz-app-page>

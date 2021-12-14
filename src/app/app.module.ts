@@ -11,7 +11,8 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { IconsProviderModule } from './icons-provider.module';
-import { TfNgCoreModule } from 'tf-ng-core';
+import { TfNgCoreModule } from '@3t-transform/tf-ng-core';
+import { TfNgNzModule } from '@3t-transform/tf-ng-nz';
 
 // import { NzGridModule } from 'ng-zorro-antd/grid';
 
@@ -53,6 +54,8 @@ import { NzMessageModule } from 'ng-zorro-antd/message';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTreeModule } from 'ng-zorro-antd/tree';
 
+import { environment } from '../environments/environment';
+
 registerLocaleData(en);
 
 @NgModule({
@@ -65,11 +68,11 @@ registerLocaleData(en);
   imports: [
     BrowserModule,
     AppRoutingModule,
+    TfNgCoreModule,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     IconsProviderModule,
-    TfNgCoreModule,
     // NzGridModule,
 
     // NzDropDownModule,
@@ -103,7 +106,20 @@ registerLocaleData(en);
 		NzModalModule,
     NzMessageModule,
     NzEmptyModule,
-    NzTreeModule
+    NzTreeModule,
+
+    TfNgNzModule.forRoot({
+      app:{
+				title: 'Demo App',
+				code: 'T',
+				tenantApi: 'https://localhost:8500',
+				environment: 0,
+			},
+			analytics: {
+				key: environment.umamiKey,
+				url: 'https://umami.uat.ontransform.com/umami.js',
+			},
+		})
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent],

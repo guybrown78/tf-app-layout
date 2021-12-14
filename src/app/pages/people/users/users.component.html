@@ -1,0 +1,121 @@
+<tf-ng-nz-app-page>
+
+  <!-- Page / Route specific navigation -->
+  <tf-ng-nz-app-page-navigation pageNavigation>
+  </tf-ng-nz-app-page-navigation>
+
+
+  <tf-ng-nz-app-page-columns
+    primary-column-width="350"
+  >
+
+    <!-- Start of Left/First column -->
+    <tf-ng-space vertical="md" primaryColumn>
+
+      <!-- Set all components into the scroll -->
+      <tf-ng-nz-content-scroll >
+
+
+          <!-- The content header - handles loading state and search -->
+          <tf-ng-nz-content-header
+            header
+            title="People"
+            [sub-title]="data?.length"
+            [has-search]="data?.length > 2"
+            [show-loading]="isLoading"
+            (search-active)="onSearchActive($event)"
+            [search-value]="searchValue"
+            (search-value)="onSearchValueUpdate($event)"
+            (back-clicked)="onTitleBackClicked()"
+          >
+            <!-- Include the ADD new user button to the column header -->
+            <tf-ng-item-group items justify="right">
+              <button nz-button class="aqua" nzSize="small" (click)="onAddNewClicked()">Add</button>
+            </tf-ng-item-group>
+
+          </tf-ng-nz-content-header>
+
+
+          <!-- The conent body -->
+          <tf-ng-nz-content-item
+            *ngFor="let user of filteredData"
+            [data]="user"
+            (selected)="onItemSelected($event)"
+          >
+            {{ user.fullname }}
+            <div end>
+              <tf-ng-item-group justify="right">
+                <span>{{ user.dob |date }}</span>
+                <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
+              </tf-ng-item-group>
+            </div>
+          </tf-ng-nz-content-item>
+
+          <ng-container *ngIf="!filteredData?.length && searchValue.length > 1">
+            <tf-ng-instruction-block>
+              <span>There are no results for <span class="bold">{{ searchValue }}</span></span>
+            </tf-ng-instruction-block>
+          </ng-container>
+
+          <!-- The conent footer -->
+          <tf-ng-nz-content-footer footer>
+            <tf-ng-space *ngIf="!isLoading" vertical="top-md" horizontal="auto" [full-width]="false">
+              <tf-ng-hexagon
+                (click)="onAddNewClicked()"
+                size="xs"
+                colour="white"
+                outline-colour="blue"
+              >
+                <i nz-icon class="blue" nzType="plus" nzTheme="outline"></i>
+              </tf-ng-hexagon>
+            </tf-ng-space>
+          </tf-ng-nz-content-footer>
+
+      </tf-ng-nz-content-scroll>
+
+    </tf-ng-space>
+
+
+
+    <!-- Start of Left/First column -->
+
+    <!-- Show page instructions if no data selected -->
+    <ng-container secondaryColumn *ngIf="!currentData && !isLoading">
+      <tf-ng-instruction-block>
+          <span>Choose a person from the menu to show their profile</span>
+      </tf-ng-instruction-block>
+    </ng-container>
+
+    <!-- Show selected data instructions -->
+    <ng-container secondaryColumn *ngIf="currentData">
+      <tf-ng-space vertical="md">
+        <tf-ng-block colour="white" full-height="false" min-height="280">
+          <tf-ng-space vertical="md">
+
+            <tf-ng-nz-content-header
+              [title]="currentData.fullname"
+              title-size="large"
+              [sub-title]="currentData.email"
+              [show-loading]="currentDataLoading"
+            >
+              <!--  -->
+              <tf-ng-item-group justify="right" items>
+
+                <tf-ng-item-group justify="left">
+                  <nz-switch [(ngModel)]="currentData.active" nzSize="small"></nz-switch>
+                  <span class="text-xs uppercase">{{ currentData.active ? 'Active' : 'Deactive'}}</span>
+                </tf-ng-item-group>
+
+                <i nz-icon nzType="ellipsis" nzTheme="outline"></i>
+
+              </tf-ng-item-group>
+
+            </tf-ng-nz-content-header>
+
+          </tf-ng-space>
+        </tf-ng-block>
+      </tf-ng-space>
+    </ng-container>
+
+  </tf-ng-nz-app-page-columns>
+</tf-ng-nz-app-page>

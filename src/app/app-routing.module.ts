@@ -7,9 +7,9 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/welcome' },
-  { path: 'dashboard', component:DashboardComponent },
-  { path: 'monitor', component:MonitorComponent },
-  { path: 'welcome', component:WelcomeComponent }
+  { path: 'dashboard', component:DashboardComponent, data:{ breadcrumb:"Dashboard" }},
+  { path: 'monitor', component:MonitorComponent, data:{ breadcrumb:"Monitor" }},
+  { path: 'welcome', component:WelcomeComponent, data:{ breadcrumb:"welcome" }}
 ];
 
 @NgModule({
